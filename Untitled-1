@@ -1,7 +1,0 @@
-curl -s \
-  --form-string "token=aqf4ox53ovkuqaxte1aeztt9qv8quc" \
-  --form-string "user=u4bkf6n3jpcjbfe8ds83ftmaf63fch" \
-  --form-string "message=hello world" \
-  --form-string "retry=30" \
-  --form-string "expire=10800" \
-  https://api.pushover.net/1/messages.json
