@@ -1,9 +1,10 @@
 const fetch = require('node-fetch');
 const Push = require('pushover-notifications')
 const nodeSchedule = require('node-schedule');
+require('dotenv').config();
 
 let trafficStations = [{ stationId: "081", stationName: "Risiloka" },
-//{ stationId: "051", stationName: "Drobak" },
+{ stationId: "051", stationName: "Drobak" },
 { stationId: "071", stationName: "Lilistrom"},
 { stationId: "061", stationName: "Billingstad"}];
 let sentNotifications = new Set()
@@ -12,6 +13,8 @@ let push = new Push({
     user: process.env.PUSHOVER_USER_ID,
     token: process.env.PUSHOVER_TOKEN,
 })
+const maxDateRange = new Date(process.env.MAX_DATE);
+const minDateRange = new Date(process.env.MIN_DATE);
 
 const job =  nodeSchedule.scheduleJob('*/10 * * * * *', function () {
     try {
@@ -52,6 +55,12 @@ const job =  nodeSchedule.scheduleJob('*/10 * * * * *', function () {
 
                         let pushSentThisIteration = 0;
                         for(let i = 0; i < schedules.length ; i++) {
+
+                            if((maxDateRange < new Date(schedules[i].start) || (minDateRange > new Date(schedules[i].start)))) {
+                                // console.log("Schedule for school " + trafficStation.stationName + " beyond the desired calender dates . Schedule Date: " + schedules[i].start + " Max Date:" + maxDateRange + " Min Date:" + minDateRange);                        
+                                continue; 
+                            }
+
                             if (sentNotifications.has(trafficStation.stationName + schedules[i].start)) {
                                 console.log("Notifications already sent for school " + trafficStation.stationName + " for the time " +schedules[i].start );                        
                             } else {
